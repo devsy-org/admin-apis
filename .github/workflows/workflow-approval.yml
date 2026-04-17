@@ -13,9 +13,9 @@ jobs:
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
-          client-id: ${{ secrets.DEVSY_GITHUB_CLIENT_ID }}
+          app-id: ${{ secrets.DEVSY_GITHUB_APP_ID }}
           private-key: ${{ secrets.DEVSY_GITHUB_APP_PRIVATE_KEY }}
-      - uses: skevetter/automatic-approve-action@v1
+      - uses: skevetter/automatic-approve-action@v2
         with:
           token: ${{ steps.app-token.outputs.token }}
           workflows: "commit.yml,lint.yml,pre-commit.yml"
