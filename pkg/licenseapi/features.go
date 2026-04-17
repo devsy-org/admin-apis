@@ -146,7 +146,7 @@ const (
 
 	DevsyDistroIsolatedControlPlane FeatureName = "devsy-distro-isolated-cp" // Isolated Control Plane
 
-	Devpod FeatureName = "devpod" // Dev Environment Management
+	Devsy FeatureName = "devsy" // Dev Environment Management
 
 )
 
@@ -223,7 +223,7 @@ func GetFeatures() []FeatureName {
 		SecretEncryption,
 		DevsyDistroAdmissionControl,
 		DevsyDistroIsolatedControlPlane,
-		Devpod,
+		Devsy,
 	}
 }
 
@@ -586,7 +586,7 @@ func GetAllFeatures() []*Feature {
 		},
 		{
 			DisplayName: "Dev Environment Management",
-			Name:        "devpod",
+			Name:        "devsy",
 			Module:      "dev-environments",
 		},
 	}

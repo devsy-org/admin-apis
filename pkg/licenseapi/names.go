@@ -36,9 +36,8 @@ const (
 // Products
 const (
 	/* NEVER CHANGE ANY OF THESE */
-	Devsy     ProductName = "devsy"
-	DevsyPro  ProductName = "devsy-pro"
-	DevPodPro ProductName = "devpod-pro"
+	DevsyOrg ProductName = "devsy"
+	DevsyPro ProductName = "devsy-pro"
 )
 
 // Modules
@@ -47,7 +46,6 @@ const (
 	KubernetesClusterModule   ModuleName = "k8s-clusters"
 	DevsyModule               ModuleName = "devsy"
 	DevsyProDistroModule      ModuleName = "devsy-pro-distro"
-	DevPodModule              ModuleName = "devpod"
 	AuthModule                ModuleName = "auth"
 	TemplatingModule          ModuleName = "templating"
 	SecretsModule             ModuleName = "secrets"
@@ -78,13 +76,13 @@ const (
 // Resources (e.g. for limits)
 const (
 	/* NEVER CHANGE ANY OF THESE */
-	ConnectedClusterLimit        ResourceName = "connected-cluster"
-	DevsyClusterInstanceLimit    ResourceName = "virtual-cluster-instance"
-	DevsyClusterInstanceHALimit  ResourceName = "virtual-cluster-instance-ha"
-	SpaceInstanceLimit           ResourceName = "space-instance"
-	DevPodWorkspaceInstanceLimit ResourceName = "devpod-workspace-instance"
-	UserLimit                    ResourceName = "user"
-	InstanceLimit                ResourceName = "instance"
+	ConnectedClusterLimit       ResourceName = "connected-cluster"
+	DevsyClusterInstanceLimit   ResourceName = "virtual-cluster-instance"
+	DevsyClusterInstanceHALimit ResourceName = "virtual-cluster-instance-ha"
+	SpaceInstanceLimit          ResourceName = "space-instance"
+	DevsyWorkspaceInstanceLimit ResourceName = "devsy-workspace-instance"
+	UserLimit                   ResourceName = "user"
+	InstanceLimit               ResourceName = "instance"
 )
 
 // Resource Status

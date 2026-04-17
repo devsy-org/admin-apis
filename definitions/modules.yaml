@@ -64,5 +64,5 @@ modules:
   - name: "dev-environments"
     displayName: "Dev Environments"
     limits:
-      - name: devpod-workspace-instance
+      - name: devsy-workspace-instance
         displayName: "Dev Environments"

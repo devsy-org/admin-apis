@@ -603,7 +603,7 @@ func schema_skevetter_admin_apis_pkg_licenseapi_InstanceCreateInput(ref common.R
 					},
 					"product": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Product is the product that is being used. Can be empty, devsy, devpod-pro or devsy-pro. This should NOT be a ProductName but a string to allow for downward compatibility",
+							Description: "Product is the product that is being used. Can be empty, devsy or devsy-pro. This should NOT be a ProductName but a string to allow for downward compatibility",
 							Type:        []string{"string"},
 							Format:      "",
 						},

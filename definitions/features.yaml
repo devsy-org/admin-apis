@@ -368,7 +368,7 @@ features:
   module: "devsy-pro-distro"
   description: "Isolated Control Plane optimizes resource allocation and security by splitting up the control plane and worker Devsy into separate clusters. "
   docsLink: "https://www.vcluster.com/docs/vcluster/configure/vcluster-yaml/experimental/isolated-control-plane"
-- name: "devpod"
+- name: "devsy"
   displayName: "Dev Environment Management"
   module: "dev-environments"
   preview: true

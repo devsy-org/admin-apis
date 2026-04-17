@@ -1,6 +1,6 @@
 # admin-apis
 
-Go library providing shared API types and license definitions for the [DevPod](https://github.com/skevetter/devpod) ecosystem.
+Go library providing shared API types and license definitions for the [Devsy](https://github.com/devsy-org/devsy) ecosystem.
 
 ## Prerequisites
 

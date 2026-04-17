@@ -38,10 +38,10 @@ modules:
   name: deployment-modes
 - displayName: Dev Environments
   features:
-  - devpod
+  - devsy
   limits:
   - displayName: Dev Environments
-    name: devpod-workspace-instance
+    name: devsy-workspace-instance
   name: dev-environments
 - displayName: Devsy
   features:
