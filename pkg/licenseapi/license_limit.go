@@ -13,9 +13,9 @@ var Limits = map[ResourceName]*Limit{
 		DisplayName: "Virtual Clusters (HA)",
 		Name:        string(DevsyClusterInstanceHALimit),
 	},
-	DevPodWorkspaceInstanceLimit: {
+	DevsyWorkspaceInstanceLimit: {
 		DisplayName: "Dev Environments",
-		Name:        string(DevPodWorkspaceInstanceLimit),
+		Name:        string(DevsyWorkspaceInstanceLimit),
 	},
 	UserLimit: {
 		DisplayName: "Users",
