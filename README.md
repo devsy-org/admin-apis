@@ -10,7 +10,7 @@ Go library providing shared API types and license definitions for the [Devsy](ht
 ## Usage
 
 ```bash
-go get github.com/skevetter/admin-apis
+go get github.com/devsy-org/admin-apis
 ```
 
 ## Development

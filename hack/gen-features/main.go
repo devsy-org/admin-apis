@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/skevetter/admin-apis/hack/internal/yamlparser"
-	"github.com/skevetter/admin-apis/pkg/licenseapi"
+	"github.com/devsy-org/admin-apis/hack/internal/yamlparser"
+	"github.com/devsy-org/admin-apis/pkg/licenseapi"
 	"sigs.k8s.io/yaml"
 )
 
