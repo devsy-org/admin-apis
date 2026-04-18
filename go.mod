@@ -1,4 +1,4 @@
-module github.com/skevetter/admin-apis
+module github.com/devsy-org/admin-apis
 
 go 1.25
 
