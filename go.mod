@@ -4,8 +4,8 @@ go 1.25
 
 require (
 	github.com/stripe/stripe-go/v81 v81.4.0
-	k8s.io/kube-openapi v0.0.0-20260330154417-16be699c7b31
-	sigs.k8s.io/yaml v1.4.0
+	k8s.io/kube-openapi v0.0.0-20260624041617-8f3fa4921821
+	sigs.k8s.io/yaml v1.6.0
 )
 
 require (
@@ -25,6 +25,7 @@ require (
 	github.com/go-openapi/swag/typeutils v0.25.5 // indirect
 	github.com/go-openapi/swag/yamlutils v0.25.5 // indirect
 	github.com/google/gnostic-models v0.7.1 // indirect
+	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
