@@ -4,6 +4,7 @@ go 1.25.0
 
 require (
 	github.com/stripe/stripe-go/v81 v81.4.0
+	github.com/stripe/stripe-go/v86 v86.4.1
 	k8s.io/kube-openapi v0.0.0-20260821135717-be32def86098
 	sigs.k8s.io/yaml v1.6.0
 )
