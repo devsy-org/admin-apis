@@ -5,8 +5,8 @@ import (
 	"maps"
 
 	"github.com/devsy-org/admin-apis/pkg/licenseapi"
-	stripe "github.com/stripe/stripe-go/v81"
-	stripeclient "github.com/stripe/stripe-go/v81/client"
+	stripe "github.com/stripe/stripe-go/v87"
+	stripeclient "github.com/stripe/stripe-go/v87/client"
 )
 
 const (
