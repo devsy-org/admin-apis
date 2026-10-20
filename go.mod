@@ -3,7 +3,6 @@ module github.com/devsy-org/admin-apis
 go 1.27.0
 
 require (
-	github.com/stripe/stripe-go/v81 v81.4.0
 	github.com/stripe/stripe-go/v87 v87.0.0
 	k8s.io/kube-openapi v0.0.0-20261001230523-97fa35140926
 	sigs.k8s.io/yaml v1.6.0
@@ -18,6 +17,7 @@ require (
 	github.com/go-openapi/swag/pools v0.27.1 // indirect
 	github.com/go-openapi/swag/typeutils v0.27.1 // indirect
 	github.com/google/gnostic-models v0.7.1 // indirect
+	github.com/shopspring/decimal v1.4.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect

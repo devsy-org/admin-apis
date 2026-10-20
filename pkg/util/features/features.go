@@ -1,12 +1,12 @@
 package features
 
 import (
+	"context"
 	"fmt"
 	"maps"
 
 	"github.com/devsy-org/admin-apis/pkg/licenseapi"
-	stripe "github.com/stripe/stripe-go/v81"
-	stripeclient "github.com/stripe/stripe-go/v81/client"
+	stripe "github.com/stripe/stripe-go/v87"
 )
 
 const (
@@ -19,7 +19,7 @@ type SyncedFeature struct {
 }
 
 func EnsureFeatures(
-	stripeClient *stripeclient.API,
+	stripeClient *stripe.Client,
 	syncedFeatures map[string]SyncedFeature,
 	features []*licenseapi.Feature,
 	additionalAttachAllProducts []stripe.Product,
@@ -47,7 +47,7 @@ func EnsureFeatures(
 }
 
 func EnsureStripeFeatures(
-	stripeClient *stripeclient.API,
+	stripeClient *stripe.Client,
 	syncedFeatures map[string]SyncedFeature,
 	features []*licenseapi.Feature,
 	isLimit bool,
@@ -141,10 +141,11 @@ type EnsureFeatureParams struct {
 }
 
 func EnsureFeatureExists(
-	stripeClient *stripeclient.API,
+	stripeClient *stripe.Client,
 	syncedFeatures map[string]SyncedFeature,
 	params EnsureFeatureParams,
 ) error {
+	ctx := context.Background()
 	name := params.Name
 	displayName := params.DisplayName
 	extraMetadata := params.ExtraMetadata
@@ -158,7 +159,7 @@ func EnsureFeatureExists(
 		return nil
 	}
 
-	stripeParams := stripe.EntitlementsFeatureParams{
+	stripeParams := stripe.EntitlementsFeatureCreateParams{
 		Name:      &displayName,
 		LookupKey: &name,
 	}
@@ -167,7 +168,7 @@ func EnsureFeatureExists(
 		stripeParams.AddMetadata(key, value)
 	}
 
-	feature, err := stripeClient.EntitlementsFeatures.New(&stripeParams)
+	feature, err := stripeClient.V1EntitlementsFeatures.Create(ctx, &stripeParams)
 	if err != nil {
 		return fmt.Errorf(
 			"failed to create Stripe feature from feature %s: %w",
@@ -181,32 +182,25 @@ func EnsureFeatureExists(
 	return nil
 }
 
-func FindFeature(stripeClient *stripeclient.API, id string) (*SyncedFeature, error) {
-	list := stripeClient.EntitlementsFeatures.List(&stripe.EntitlementsFeatureListParams{
+func FindFeature(stripeClient *stripe.Client, id string) (*SyncedFeature, error) {
+	ctx := context.Background()
+	for feature, err := range stripeClient.V1EntitlementsFeatures.List(ctx, &stripe.EntitlementsFeatureListParams{
 		LookupKey: &id,
-	})
-	if err := list.Err(); err != nil {
-		return nil, fmt.Errorf(
-			"failed to list features while check if feature [%s] exists: %w",
-			id,
-			err,
-		)
+	}).All(ctx) {
+		if err != nil {
+			return nil, fmt.Errorf(
+				"failed to list features while check if feature [%s] exists: %w",
+				id,
+				err,
+			)
+		}
+		return &SyncedFeature{Feature: feature}, nil
 	}
-	if !list.Next() {
-		return nil, nil
-	}
-	feature, ok := list.Current().(*stripe.EntitlementsFeature)
-	if !ok {
-		return nil, fmt.Errorf("failed to ")
-	}
-	feat := &SyncedFeature{
-		Feature: feature,
-	}
-	return feat, nil
+	return nil, nil
 }
 
 func EnsureFeatureProducts(
-	stripeClient *stripeclient.API,
+	stripeClient *stripe.Client,
 	syncedFeatures map[string]SyncedFeature,
 ) error {
 	for key, feature := range syncedFeatures {
@@ -225,10 +219,11 @@ func EnsureFeatureProducts(
 }
 
 func EnsureFeatureProduct(
-	stripeClient *stripeclient.API,
+	stripeClient *stripe.Client,
 	syncedFeature *SyncedFeature,
 ) (*stripe.Product, error) {
-	productSearch := stripeClient.Products.Search(&stripe.ProductSearchParams{
+	ctx := context.Background()
+	for product, err := range stripeClient.V1Products.Search(ctx, &stripe.ProductSearchParams{
 		SearchParams: stripe.SearchParams{
 			Query: fmt.Sprintf(
 				metadataQueryFmt,
@@ -236,25 +231,24 @@ func EnsureFeatureProduct(
 				syncedFeature.Feature.LookupKey,
 			),
 		},
-	})
-	if err := productSearch.Err(); err != nil {
-		return nil, err
-	}
-	if productSearch.Next() {
+	}).All(ctx) {
+		if err != nil {
+			return nil, err
+		}
 		// a product exists with features name
-		return productSearch.Product(), nil
+		return product, nil
 	}
 
 	usdCurrencyCode := "usd"
 	unit := int64(2000000) // sample placeholder price
 	interval := "year"
 	intervalCount := int64(1)
-	product, err := stripeClient.Products.New(&stripe.ProductParams{
+	product, err := stripeClient.V1Products.Create(ctx, &stripe.ProductCreateParams{
 		Name: &syncedFeature.Feature.Name,
-		DefaultPriceData: &stripe.ProductDefaultPriceDataParams{
+		DefaultPriceData: &stripe.ProductCreateDefaultPriceDataParams{
 			Currency:   &usdCurrencyCode,
 			UnitAmount: &unit,
-			Recurring: &stripe.ProductDefaultPriceDataRecurringParams{
+			Recurring: &stripe.ProductCreateDefaultPriceDataRecurringParams{
 				Interval:      &interval,
 				IntervalCount: &intervalCount,
 			},
@@ -267,7 +261,7 @@ func EnsureFeatureProduct(
 		return nil, err
 	}
 
-	_, err = stripeClient.ProductFeatures.New(&stripe.ProductFeatureParams{
+	_, err = stripeClient.V1ProductFeatures.Create(ctx, &stripe.ProductFeatureCreateParams{
 		Product:            &product.ID,
 		EntitlementFeature: &syncedFeature.Feature.ID,
 	})
@@ -278,14 +272,15 @@ func EnsureFeatureProduct(
 }
 
 func EnsureAttachAll(
-	stripeClient *stripeclient.API,
+	stripeClient *stripe.Client,
 	features map[string]SyncedFeature,
 	attachTo []stripe.Product,
 ) error {
+	ctx := context.Background()
 	if attachTo == nil {
 		attachTo = []stripe.Product{}
 	}
-	productSearch := stripeClient.Products.Search(&stripe.ProductSearchParams{
+	for prod, err := range stripeClient.V1Products.Search(ctx, &stripe.ProductSearchParams{
 		SearchParams: stripe.SearchParams{
 			Query: fmt.Sprintf(
 				metadataQueryFmt,
@@ -293,12 +288,10 @@ func EnsureAttachAll(
 				licenseapi.MetadataValueTrue,
 			),
 		},
-	})
-	if err := productSearch.Err(); err != nil {
-		return err
-	}
-	for productSearch.Next() {
-		prod := productSearch.Product()
+	}).All(ctx) {
+		if err != nil {
+			return err
+		}
 		attachTo = append(attachTo, *prod)
 	}
 
@@ -319,10 +312,13 @@ func EnsureAttachAll(
 		for featureID, feat := range featuresToCheck {
 			metadataHiddenValue, ok := feat.Feature.Metadata[licenseapi.MetadataKeyFeatureIsHidden]
 			if !ok || metadataHiddenValue != licenseapi.MetadataValueTrue {
-				_, err := stripeClient.ProductFeatures.New(&stripe.ProductFeatureParams{
-					Product:            &prod.ID,
-					EntitlementFeature: &featureID,
-				})
+				_, err := stripeClient.V1ProductFeatures.Create(
+					ctx,
+					&stripe.ProductFeatureCreateParams{
+						Product:            &prod.ID,
+						EntitlementFeature: &featureID,
+					},
+				)
 				if err != nil {
 					return err
 				}
@@ -333,18 +329,18 @@ func EnsureAttachAll(
 }
 
 func SearchProductForFeatures(
-	stripeClient *stripeclient.API,
+	stripeClient *stripe.Client,
 	productID string,
 	featuresToCheck map[string]SyncedFeature,
 ) error {
-	productFeaturesList := stripeClient.ProductFeatures.List(&stripe.ProductFeatureListParams{
+	ctx := context.Background()
+	for productFeature, err := range stripeClient.V1ProductFeatures.List(ctx, &stripe.ProductFeatureListParams{
 		Product: &productID,
-	})
-	for productFeaturesList.Next() {
-		if err := productFeaturesList.Err(); err != nil {
+	}).All(ctx) {
+		if err != nil {
 			return err
 		}
-		delete(featuresToCheck, productFeaturesList.ProductFeature().EntitlementFeature.ID)
+		delete(featuresToCheck, productFeature.EntitlementFeature.ID)
 	}
 	return nil
 }
